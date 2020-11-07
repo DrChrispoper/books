@@ -4,12 +4,12 @@ import { filterInterface } from './types';
 const axios = require('axios').default;
 axios.defaults.baseURL = endpoint;
 
-export const getBooks = (
+export const getBooks = async (
   page: number,
   itemsPerPage: number,
   filters: Array<filterInterface>
 ) => {
-  axios({
+  return axios({
     method: 'post',
     url: '/api/books',
     data: {
@@ -17,11 +17,5 @@ export const getBooks = (
       itemsPerPage: itemsPerPage,
       filters: filters,
     },
-  })
-    .then(function (response: any) {
-      console.log(response);
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+  });
 };
