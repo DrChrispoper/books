@@ -1,1 +1,1 @@
-export const endpoint = '​';
+export const endpoint = `${process.env.ENDPOINT}/`;
