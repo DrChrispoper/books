@@ -9,10 +9,20 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import { getBooks } from '../../../utils/requests';
-import { responseInterface, Book, filterInterface } from '../../../utils/types';
+import {
+  responseInterface,
+  Book,
+  filterInterface,
+  changeInterface,
+} from '../../../utils/types';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 
 const BooksTable: React.FC<RouteComponentProps<any>> = () => {
-  const [page, setPage] = useState(1);
+  const { page: urlPage } = useParams();
+  const history = useHistory();
+  const location = useLocation();
+
+  const [page, setPage] = useState(+urlPage);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState<filterInterface[]>([]);
   const [totalSize, setTotalSize] = useState(0);
@@ -65,14 +75,20 @@ const BooksTable: React.FC<RouteComponentProps<any>> = () => {
     },
   ];
 
-  const handleTableChange = (type, { page, sizePerPage, filters }) => {
+  const handleTableChange = (
+    _type: any,
+    { page, sizePerPage, filters }: changeInterface
+  ) => {
+    const path = location.pathname.substring(0, location.pathname.length - 1);
+    history.push(`${path}${page}`);
+
     setTimeout(() => {
       setPage(page);
       setItemsPerPage(sizePerPage);
 
       const filterVals = [];
       for (const dataField in filters) {
-        const { filterVal, filterType, comparator } = filters[dataField];
+        const { filterVal } = filters[dataField];
         filterVals.push(filterVal);
       }
 
@@ -88,7 +104,7 @@ const BooksTable: React.FC<RouteComponentProps<any>> = () => {
     <>
       {allBooks.length > 0 ? (
         <ToolkitProvider keyField="id" data={allBooks} columns={columns} search>
-          {toolkitprops => (
+          {(toolkitprops: { baseProps: JSX.IntrinsicAttributes }) => (
             <div>
               <Card className="mb-5 mt-5 sensor-record-card">
                 <CardBody>

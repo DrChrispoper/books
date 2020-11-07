@@ -21,3 +21,9 @@ interface dataInterface {
 export interface responseInterface {
   data: dataInterface;
 }
+
+export interface changeInterface {
+  page: number;
+  sizePerPage: number;
+  filters: Array<any>;
+}
